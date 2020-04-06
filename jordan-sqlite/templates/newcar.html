@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html>
+	<body>
+		<form action = "{{ url_for('addcar') }}" method = "POST">
+			<h3>Car Information</h3>
+			<label for="crlp">License Plate:</label><br>
+			<input type="text" id="crlp" name="crlp"><br>
+
+			<label for="crmk">Car Make:</label><br>
+			<input type="text" id="crmk" name="crmk"><br>
+
+			<label for="crmdl">Car Model:</label><br>
+			<input type="text" id="crmdl" name="crmdl"><br>
+
+			<label for="crclr">Car Color:</label><br>
+			<input type="text" id="crclr" name="crclr"><br>
+
+			<input type="submit" value="submit">
+		</form>
+	</body>
+</html>`

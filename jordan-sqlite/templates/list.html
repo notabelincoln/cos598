@@ -1,0 +1,25 @@
+<!DOCTYPE>
+<html>
+	<body>
+		<table border = 1>
+			<thead>
+				<td>ID</td>
+				<td>License</td>
+				<td>Make</td>
+				<td>Model</td>
+				<td>Color</td>
+			</thead>
+			
+			{% for row in rows %}
+			<tr>
+				<td>{{row["id"]}}</td>
+				<td>{{row["license"]}}</td>
+				<td>{{row["make"]}}</td>
+				<td>{{row["model"]}}</td>
+				<td>{{row["color"]}}</td>
+			{% endfor %}
+		</table>
+		<br>
+		<a href="/">Home</a>
+	</body>
+</html>
