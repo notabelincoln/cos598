@@ -1,16 +1,8 @@
 version: "3.7"
 services:
+    database:
+        build:
+            context: ./database
+            dockerfile: Dockerfile-db
+        image: jordan-db:db-img
 
-  redis:
-    image: redis:alpine
-    ports:
-            - "5000:5000"
-    networks:
-      - frontend
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure

@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+   <body>
+      <table border = 1>
+         <thead>
+            <td>ID</td>
+			<td>Model</td>
+            <td>Color</td>
+            <td>Cost</td>
+         </thead>
+         
+         {% for row in rows %}
+            <tr>
+               <td>{{row["carid"]}}</td>
+               <td>{{row["model"]}}</td>
+               <td> {{ row["color"]}}</td>
+               <td>{{row["cost"]}}</td>	
+            </tr>
+         {% endfor %}
+      </table>
+   </body>
+</html>
