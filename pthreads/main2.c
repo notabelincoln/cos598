@@ -18,33 +18,23 @@ void *generate_points(void *gp_arg);
 void montecarlo(void);
 
 
-// Structure of data to pass to computational function
-typedef struct {
-	uint32_t size, counter;
-	double x, y, z;
-	uint32_t points_out;
-} data_vars;
-
-
 // MAIN FUNCTION
 int main(int argc, char *argv[])
 {
 	//void *add_points; // stores reutrn value of computation function
 	uint8_t ret; // return value during pthread initialization
 	pthread_t threads[NUM_THREADS]; // array of pthreads
-	data_vars *pass_vars; // array of pointers to data
-
+	
 	srand(time(0));
 
+	pi_points = 0;
 	ret = 0;
+
+
 
 	// Set the correct data
 	for (int i = 0; i < NUM_THREADS; i++) {
-		pass_vars = (data_vars *)malloc(sizeof(data_vars));
-		pass_vars->size = NUM_POINTS / NUM_THREADS;
-		pass_vars->points_out = 0;
-		printf("Address of pass_vars: %p\n", pass_vars);
-		ret = pthread_create(&threads[i], NULL, generate_points, (void *)pass_vars);
+		ret = pthread_create(&threads[i], NULL, generate_points, NULL);
 
 		if (ret) {
 			printf("Bad news bears\n");
@@ -71,9 +61,14 @@ void *generate_points(void *gp_arg) {
 }
 
 // PERFORM MONTECARLO SIMULATION
-void montecarlo(void *gp_arg)
+void montecarlo(void)
 {
-	for () {
+	double x, y, z;
+	uint32_t result;
+
+	result = 0;
+	
+	for (uint32_t i = 0; i < NUM_POINTS / NUM_THREADS; i++) {
 		x = (double) rand() / RAND_MAX * 2 - 1;
 		y = (double) rand() / RAND_MAX * 2 - 1;
 		z = pow(x, 2) + pow(y, 2);
@@ -86,5 +81,3 @@ void montecarlo(void *gp_arg)
 	pi_points += result;
 	pthread_mutex_unlock(&mutex_j);
 }
-
-

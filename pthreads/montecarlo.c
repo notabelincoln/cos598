@@ -4,7 +4,7 @@
 // Mathematically generate the points in the circle
 void *generate_points(void *gp_arg)
 {
-	struct pthread_vars vars* = (struct pthread_vars *)gp_arg;
+	data_vars *vars = (data_vars *)gp_arg;
 	printf("Generating Points\n");
 
 	for (vars->counter = 0; vars->counter < vars->size; (vars->counter)++) {
@@ -13,8 +13,6 @@ void *generate_points(void *gp_arg)
 		vars->z = (vars->x) * (vars->x) + (vars->y) * (vars->y);
 		if (vars->z <= 1.0)
 			(vars->points_out)++;
-		}
 	}
-
 	pthread_exit((void *)(&(vars->points_out)));
 }

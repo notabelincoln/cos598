@@ -1,6 +1,7 @@
 // Abe Jordan		montecarlo.h
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "pthread.h"
 #ifndef MONTECARLO_H
 #define MONTECARLO_H
