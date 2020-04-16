@@ -6,8 +6,8 @@
 #include <math.h>
 #include "pthread.h"
 
-#define NUM_THREADS 8
-#define NUM_POINTS 100000
+#define NUM_THREADS 4
+#define NUM_POINTS 10000000
 
 volatile uint32_t pi_points = 0; // number of points in circle
 pthread_mutex_t mutex_j = PTHREAD_MUTEX_INITIALIZER; // prevents race condition
@@ -15,14 +15,13 @@ pthread_mutex_t mutex_j = PTHREAD_MUTEX_INITIALIZER; // prevents race condition
 
 // Generates points in the circle
 void *generate_points(void *gp_arg);
-void montecarlo(void);
 
 
 // Structure of data to pass to computational function
 typedef struct {
 	uint32_t size, counter;
 	double x, y, z;
-	uint32_t points_out;
+	uint32_t result;
 } data_vars;
 
 
@@ -42,8 +41,8 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < NUM_THREADS; i++) {
 		pass_vars = (data_vars *)malloc(sizeof(data_vars));
 		pass_vars->size = NUM_POINTS / NUM_THREADS;
-		pass_vars->points_out = 0;
-		printf("Address of pass_vars: %p\n", pass_vars);
+		pass_vars->result = 0;
+		//printf("Address of pass_vars: %p\n", pass_vars);
 		ret = pthread_create(&threads[i], NULL, generate_points, (void *)pass_vars);
 
 		if (ret) {
@@ -61,30 +60,27 @@ int main(int argc, char *argv[])
 }
 
 
-// THREAD CALLS FUNCTION TO GENERATE POINTS
-void *generate_points(void *gp_arg) {
-	printf("Address of gp_arg: %p\n", &gp_arg);
-	montecarlo();
-	free((data_vars *)gp_arg);
-
-	pthread_exit(NULL);
-}
-
 // PERFORM MONTECARLO SIMULATION
-void montecarlo(void *gp_arg)
+void *generate_points(void *arg)
 {
-	for () {
-		x = (double) rand() / RAND_MAX * 2 - 1;
-		y = (double) rand() / RAND_MAX * 2 - 1;
-		z = pow(x, 2) + pow(y, 2);
+	data_vars *ptr = (data_vars *)arg;
 
-		if (z <= 1)
-			result++;
+	for (ptr->counter = 0; ptr->counter < NUM_POINTS / NUM_THREADS; ptr->counter++) {
+		ptr->x = (double) rand() / RAND_MAX * 2 - 1;
+		ptr->y = (double) rand() / RAND_MAX * 2 - 1;
+		ptr->z = pow(ptr->x, 2) + pow(ptr->y, 2);
+
+		//printf("Address of arg: %p\n", arg);
+
+		if (ptr->z <= 1)
+			ptr->result++;
 	}
 
 	pthread_mutex_lock(&mutex_j);
-	pi_points += result;
+	pi_points += ptr->result;
 	pthread_mutex_unlock(&mutex_j);
+
+	free(ptr);
+
+	pthread_exit(NULL);
 }
-
-
