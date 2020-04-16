@@ -6,8 +6,8 @@
 #include <math.h>
 #include "pthread.h"
 
-#define NUM_THREADS 8
-#define NUM_POINTS 100000
+#define NUM_THREADS 1
+#define NUM_POINTS 10000000
 
 volatile uint32_t pi_points = 0; // number of points in circle
 pthread_mutex_t mutex_j = PTHREAD_MUTEX_INITIALIZER; // prevents race condition
@@ -17,6 +17,12 @@ pthread_mutex_t mutex_j = PTHREAD_MUTEX_INITIALIZER; // prevents race condition
 void *generate_points(void *gp_arg);
 void montecarlo(void);
 
+// Structure of data to pass to computational function
+typedef struct {
+	uint32_t size, counter;
+	double x, y, z;
+	uint32_t result;
+} data_vars;
 
 // MAIN FUNCTION
 int main(int argc, char *argv[])
