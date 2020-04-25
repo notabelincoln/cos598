@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  rng:
+    build: ./rng
+
+  hasher:
+    build: ./hasher
+
+  worker:
+    build: ./worker
+    volumes:
+        - db-data:/usr/lib
+
+  web:
+    build: .
+    volumes:
+        - db-data:/usr/lib
+    ports:
+        - 5000:5000
+
+  sqlite:
+    image: python:3.7-alpine
+
+volumes:
+    db-data:
