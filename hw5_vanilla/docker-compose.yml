@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+
+  rng:
+    build: ./rng
+
+  hasher:
+    build: ./hasher
+
+  worker:
+    build: ./worker
+
+  web:
+    build: .
+    ports:
+      - 5000:5000
+
+  redis:
+    image: redis:alpine
+

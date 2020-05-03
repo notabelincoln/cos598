@@ -20,8 +20,5 @@ services:
     ports:
         - 5000:5000
 
-  sqlite:
-    image: python:3.7-alpine
-
 volumes:
     db-data:

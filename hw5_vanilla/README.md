@@ -1,0 +1,1 @@
+# Final_DockerCoins The primry changes were to update flask to 1.1.1 and Z** to 1.0.1 and to update the rickshaw.min.css to a much newer version. One problem with this whole thing was the code was very old and the webui.js could not communicate with redis. Switching to python/flask solved this issue, but problems with .css remained. Fixed by updating both flask and **
