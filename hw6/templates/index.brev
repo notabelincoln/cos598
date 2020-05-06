@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<title>DockerCoin Miner WebUI</title>
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='styles/rickshaw.min.css') }}">ZZq
+<style>
+#graph {
+    background-color: #eee;
+    width: 800px;
+    height: 400px;
+}
+#tweet {
+    color: royalblue;
+}
+</style>
+
+<script type = javascript src="{{ url_for('static', filename='js/jquery.js')}}"></script>
+<script type = javascript src="{{ url_for('static', filename='js/d3.v3.min.js')}}"></script>
+<script type = javascript src="{{ url_for('static', filename='js/rickshaw.min.js')}}"></script>
+
+
+</head>
+
+<body>
+
+<h1>DockerCoin Miner WebUI</h1>
+
+<div id="graph"></div>
+
+<h2>
+  Current mining speed:
+  <span id="speed">-</span>
+  <a id="tweet" href="#">(Tweet this!)</a>
+</h2>
+
+</body>
+</html>
+
