@@ -5,4 +5,3 @@ COPY coworker.py /
 RUN pip install -r requirements.txt
 COPY . .
 CMD ["python", "coworker.py"]
-EXPOSE 80

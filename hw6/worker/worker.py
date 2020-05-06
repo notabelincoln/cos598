@@ -5,6 +5,7 @@ from redis import Redis
 import requests
 import time
 import threading
+import random
 
 from flask import Flask, redirect, render_template, jsonify
 from flask import request, url_for
@@ -23,27 +24,7 @@ else:
 
 redis = Redis("redis")
 
-@app.before_first_request
-def work_thread():
-    def run():
-        log.error("buya!!")
-        try:
-            log.error("Waiting.......")
-            work_loop()
-        except:
-            log.exception("In work loop:")
-            log.error("Waiting 10s and restarting.")
-            time.sleep(10)
-
-    thread = threading.Thread(target=run)
-    thread.start()
-
-@app.route('/')
-def getIndex():
-    global time_to_work
-    time_to_work = False
-    return 'OK'
-
+time_to_work = False
 
 def get_random_bytes():
     r = requests.get("http://rng/32")
@@ -88,6 +69,30 @@ def work_once():
     created = redis.hset("wallet", hex_hash, random_bytes)
     if not created:
         log.info("We already had that coin")
+
+def work_thread():
+    def run():
+        log.error("buya!!")
+        try:
+            log.error("Waiting.......")
+            work_loop()
+        except:
+            log.exception("In work loop:")
+            log.error("Waiting 10s and restarting.")
+            time.sleep(10)
+
+    thread = threading.Thread(target=run)
+    thread.start()
+
+@app.before_first_request(work_thread())
+
+@app.route('/')
+def getIndex():
+    global time_to_work
+    time_to_work = False
+    return "OK"
+
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', threaded=True, port=80)
