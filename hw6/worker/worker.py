@@ -23,34 +23,24 @@ else:
 
 redis = Redis("redis")
 
-global time_to_work
-time_to_work = True
-
-
-
 @app.before_first_request
 def work_thread():
     def run():
-        work_once()
-        while True:
-            if not time_to_work:
-                sleep_interval = random.uniform(0.1, 0.5)
-                sleep(sleep_interval)
-                time_to_work = True
-            log.error("buya!!")
-            try:
-                log.error("Waiting.......")
-                work_loop()
-            except:
-                log.exception("In work loop:")
-                log.error("Waiting 10s and restarting.")
-                time.sleep(10)
+        log.error("buya!!")
+        try:
+            log.error("Waiting.......")
+            work_loop()
+        except:
+            log.exception("In work loop:")
+            log.error("Waiting 10s and restarting.")
+            time.sleep(10)
 
     thread = threading.Thread(target=run)
     thread.start()
 
 @app.route('/')
 def getIndex():
+    global time_to_work
     time_to_work = False
     return 'OK'
 
@@ -83,6 +73,10 @@ def work_loop(interval=1):
 
 
 def work_once():
+    if not (time_to_work):
+        sleep_interval = random.uniform(0.1, 0.5)
+        time.sleep(sleep_interval)
+
     log.debug("Doing one unit of work")
     time.sleep(0.1)
     random_bytes = get_random_bytes()
@@ -96,6 +90,6 @@ def work_once():
         log.info("We already had that coin")
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80, threaded=True)
+    app.run(host='0.0.0.0', threaded=True, port=80)
 
 
