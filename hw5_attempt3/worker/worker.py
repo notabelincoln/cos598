@@ -1,7 +1,5 @@
-import redis
 import logging
 import os
-from redis import Redis
 import requests
 import time
 import threading
@@ -22,18 +20,14 @@ else:
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("requests").setLevel(logging.WARNING)
 
-
-redis = Redis("redis")
-
-
-con = lite.connect('/db/dockercoins.db')
+con = lite.connect('dockercoins.db')
 c = con.cursor()
-c.execute('CREATE TABLE IF NOT EXISTS coins (hash TEXT, attempts INTEGER)')
+c.execute('CREATE TABLE IF NOT EXISTS coins (hash TEXT, attempts INTEGER);')
+c.execute('INSERT INTO coins VALUES ("test",1);')
 
-
-
-time_to_work = False
-loops_done2 = 0
+loops_done = 0
+num_hashes = 1
+num_coins = 1
 
 def get_random_bytes():
     r = requests.get("http://rng/32")
@@ -49,23 +43,20 @@ def hash_bytes(data):
 
 def work_loop(interval=1):
     deadline = 0
-    loops_done = 0
     while True:
         if time.time() > deadline:
             log.info("{} units of work done, updating hash counter"
-                     .format(loops_done2))
+                     .format(loops_done))
             #####################
             c.execute('SELECT hash FROM coins;')
             num_hashes = c.fetchall()
-
-            c.execute('REPLACE INTO coins (id, attempts) VALUES (?, ?);', (len(num_hashes), loops_done2))
+            c.execute('REPLACE INTO coins (attempts) VALUES (?);', (loops_done))
             con.commit()
             #####################
             loops_done = 0
             deadline = time.time() + interval
         work_once()
         loops_done += 1
-        loops_done2 += 1
 
 
 def work_once():
@@ -86,7 +77,7 @@ def work_once():
             existing_hash = 1
             break
     if existing_hash == 0:
-        c.execute('INSERT INTO coins (hash, attempts) VALUES (?, ?);', (hex_hash[], loops_done2))
+        c.execute('INSERT INTO coins VALUES (?,?);', (hex_hash, loops_done))
         con.commit()
     ######################
     if existing_hash == 1:
@@ -106,20 +97,34 @@ def work_thread():
     thread = threading.Thread(target=run)
     thread.start()
 
+
+def count_coins():
+    num_coins = "0"
+    c.execute('SELECT * FROM coins;')
+    return_coins = c.fetchall()
+    if return_coins is not None:
+        num_coins = len(return_coins) - 1
+    response 
+    return num_coins
+
+def count_hashes():
+    num_hashes = "0"
+    c.execute('SELECT attempts FROM coins;')
+    arr_hashes = c.fetchall()
+    if arr_hashes is not None:
+        num_hashes = arr_hashes[len(arr_hashes) - 1][0]
+    return num_hashes
+
+
 @app.before_first_request(work_thread())
 
-@app.route('/coins/')
-def sendCoins():
-    c.execute('SELECT hash FROM coins')
-    return_coins = c.fetchall()
-    return len(return_coins)
+@app.route('/hashes')
+def getHashes():
+    return count_hashes()
 
-@app.route('/hashes/')
-def sendCoins():
-    c.execute('SELECT attempts FROM coins')
-    arr_coins = c.fetchall()
-    return_hashes = arr_coins[len(arr_coins) - 1][0]
-    return len(return_hashes)
+@app.route('/coins')
+def getCoins():
+    return count_coins()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', threaded=True, port=80)
